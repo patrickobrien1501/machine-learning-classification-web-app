@@ -22,7 +22,7 @@ classifier_name = st.sidebar.selectbox("Select Classifier", ("KNN", "SVM", "Rand
 # function definitions
 def get_dataset(dataset_name):
     '''
-    function to load datasets depending on user choice
+    Function to load datasets depending on user choice
     Input: dataset_name obtained from sidebar dropdown menu
     Outputs: Training data X and labeled output vector y
 
