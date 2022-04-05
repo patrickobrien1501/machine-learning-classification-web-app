@@ -27,7 +27,6 @@ def get_dataset(dataset_name):
     Outputs: Training data X and labeled output vector y
 
     '''
-    
     if dataset_name == "Iris":
         data = datasets.load_iris()
     elif dataset_name == "Breast Cancer":
