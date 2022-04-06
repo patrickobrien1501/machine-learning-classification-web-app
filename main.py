@@ -1,16 +1,5 @@
-from argon2 import Parameters
-import streamlit as st
-import matplotlib.pyplot as plt
-
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.decomposition import PCA
-
-import numpy as np
-from sklearn import datasets
+from imports import *
+from functions import get_dataset, add_parameter_ui, get_classifier
 
 st.title("Streamlit ML classification Web App")
 
@@ -19,73 +8,17 @@ st.write("Which one is the best classifier?")
 dataset_name = st.sidebar.selectbox("Select Dataset", ("Iris", "Breast Cancer", "Wine"))
 classifier_name = st.sidebar.selectbox("Select Classifier", ("KNN", "SVM", "Random Forest"))
 
-# function definitions
-def get_dataset(dataset_name):
-    '''
-    Function to load datasets depending on user choice
-    Input: dataset_name obtained from sidebar dropdown menu
-    Outputs: Training data X and labeled output vector y
-
-    '''
-    if dataset_name == "Iris":
-        data = datasets.load_iris()
-    elif dataset_name == "Breast Cancer":
-        data = datasets.load_breast_cancer()
-    else:
-        data = datasets.load_wine()
-    
-    # Split chosen data into data matrix and labeled target vector
-    X = data.data
-    y = data.target
-    return X, y
-
-def add_parameter_ui(clf_name):
-    '''
-    Function to add classifier parameter(s) to a dictionary
-    Input: Classifier name from sidebar drop down menu
-    Output: Dictionary with classifier specific parameters
-
-    '''
-    params = {}
-    if clf_name == "KNN":
-        K = st.sidebar.slider("K", 1, 15)
-        params["K"] = K
-    elif clf_name == "SVM":
-        C = st.sidebar.slider("C", 0.01, 10.0)
-        params["C"] = C
-    else:
-        max_depth = st.sidebar.slider("max_depth", 2, 15)
-        n_estimators = st.sidebar.slider("n_estimators", 1, 100)
-        params["max_depth"] = max_depth
-        params["n_estimators"] = n_estimators
-    return params
-
-def get_classifier(clf_name, params):
-    '''
-    Applies parameters to respective instantiated classifier object
-    Input: Classifier name and parameters dictionary
-    Output: Classifier object instance
-
-    '''
-    if clf_name == "KNN":
-        clf = KNeighborsClassifier(n_neighbors=params["K"])
-
-    elif clf_name == "SVM":
-        clf = SVC(C=params["C"])
-
-    else:
-        clf = RandomForestClassifier(n_estimators=params["n_estimators"],
-                                    max_depth=params["max_depth"], random_state=1234)
-    return clf
-
 if __name__ == "__main__":
 
+    # Load dataset
     X, y = get_dataset(dataset_name)
     st.write("shape of dataset", X.shape)
     st.write("number of classes", len(np.unique(y)))
 
+    # Pass classifier name to function and return parameter dictionary
     params = add_parameter_ui(classifier_name)
 
+    # Return classifier object instance
     clf = get_classifier(classifier_name, params)
 
     # Classification
